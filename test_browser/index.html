@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <title>Testbench</title>
+  <script type="module">
+
+    import allTests from '../test/test.js';
+
+    document.querySelector('#button').addEventListener('click', allTests);
+
+  </script>
+</head>
+<body>
+<button type="button" id="button">Run!</button>
+</body>
+</html>

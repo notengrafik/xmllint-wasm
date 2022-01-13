@@ -1,0 +1,27 @@
+#!/usr/bin/python3
+
+import http.server
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import socketserver
+
+port = 8088
+
+Handler = http.server.SimpleHTTPRequestHandler
+
+Handler.extensions_map = {
+  '.html':  'text/html',
+  '.png':   'image/png',
+  '.jpg':   'image/jpg',
+  '.svg':   'image/svg+xml',
+  '.css':   'text/css',
+  '.js':    'application/x-javascript',
+  '.json':  'application/json',
+  '.xml':   'application/xml',
+  '.wasm':  'application/wasm',
+  '':       'application/octet-stream' # Default
+}
+
+httpd = socketserver.TCPServer(('127.0.0.1', port), Handler)
+
+print("Serving at port", port)
+httpd.serve_forever()

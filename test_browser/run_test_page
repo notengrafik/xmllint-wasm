@@ -1,0 +1,8 @@
+#!/bin/dash
+
+set -e
+
+here="$(dirname "$0")"
+cd "$(dirname "${here}")"
+"$(basename "${here}")/run_http_server" &
+exec xdg-open 'http://localhost:8088/test_browser'

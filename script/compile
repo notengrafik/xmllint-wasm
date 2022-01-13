@@ -4,10 +4,18 @@
 
 emcc -Os -s WASM=1 -s EMULATE_FUNCTION_POINTER_CASTS=1 \
 	-s ENVIRONMENT=node,worker \
-	-s EXPORT_ES6=1 \
 	-s MODULARIZE=true \
+	-s NO_EXIT_RUNTIME=0 \
 	-s EXPORT_NAME=Module \
 	--closure 1 \
 	--memory-init-file 0 \
 	./build/xmllint.o ./build/.libs/libxml2.a ./libz.a \
 	-o xmllint.js --pre-js ./src/pre.js
+
+# 	-s EXPORT_ES6=1 \
+# 	-s USE_ES6_IMPORT_META=0 \
+
+if { command -v modify && command -v js-beautify; } > /dev/null
+then
+  modify xmllint.js -- js-beautify
+fi

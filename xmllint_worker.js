@@ -1,27 +1,24 @@
 
-import { dirname } from 'path';
-import { createRequire } from 'module';
+importScripts('../xmllint.js');
 
-// work-around for transitional EXPORT_ES6=1, roughly based on https://github.com/emscripten-core/emscripten/issues/11792
-globalThis.__dirname = dirname(import.meta.url);
-globalThis.require = createRequire(import.meta.url);
-globalThis.importScripts = function() { };
+onmessage = function(event) {
+  function stdout(txt) {
+    postMessage({stdout: txt});
+  }
 
-import Xmllint from './xmllint.js';
+  function stderr(txt) {
+    postMessage({stderr: txt});
+  }
 
-import { workerData, parentPort } from 'worker_threads';
+  function onExit(exitCode) {
+    postMessage({exitCode: exitCode});
+  }
 
-function stdout(txt) {
-	parentPort.postMessage({isStdout: true, txt: txt});
+  Module({
+    inputFiles: event.data.inputFiles,
+    args: event.data.args,
+    stdout: stdout,
+    stderr: stderr,
+    onExit: onExit
+  });
 }
-
-function stderr(txt) {
-	parentPort.postMessage({isStdout: false, txt: txt});
-}
-
-Xmllint({
-	stdout: stdout,
-	stderr: stderr,
-	inputFiles: workerData.inputFiles,
-	args: workerData.args
-});
