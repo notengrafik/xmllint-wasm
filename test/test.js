@@ -1,6 +1,8 @@
-const fs = require('fs');
-const assert = require('assert').strict;
-const xmllint = require('../index.js');
+
+import fs from 'fs';
+import { strict as assert } from 'assert';
+import xmllint from '../index.js';
+
 const xmlValid = fs.readFileSync('./test/test-valid.xml', 'utf8');
 const xmlValidNormalized = fs.readFileSync('./test/test-valid-normalized.xml', 'utf8');
 const xmlValidFormatted = fs.readFileSync('./test/test-valid-formatted.xml', 'utf8');

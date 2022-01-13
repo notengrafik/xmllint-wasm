@@ -1,7 +1,10 @@
 #!/bin/bash
 
+## EXPORT_ES6=1 is a transitional solution, cf. https://github.com/emscripten-core/emscripten/issues/11792
+
 emcc -Os -s WASM=1 -s EMULATE_FUNCTION_POINTER_CASTS=1 \
 	-s ENVIRONMENT=node,worker \
+	-s EXPORT_ES6=1 \
 	-s MODULARIZE=true \
 	-s EXPORT_NAME=Module \
 	--closure 1 \

@@ -1,7 +1,8 @@
 
-const assert = require('assert').strict;
-const { Worker } = require('worker_threads');
-const workerModule = require.resolve('./xmllint_worker.js');
+import { strict as assert } from 'assert';
+import { Worker } from 'worker_threads';
+
+const workerModule = './xmllint_worker.js';
 
 function normalizeInput(fileInput, extension) {
 	if (!Array.isArray(fileInput)) fileInput = [fileInput];
@@ -85,9 +86,9 @@ function parseErrors(/** @type {string} */output) {
 	});
 }
 
-function validateXML(options) {
+export function validateXML(options) {
 
-	preprocessedOptions = preprocessOptions(options);
+	const preprocessedOptions = preprocessOptions(options);
 
 	return new Promise(function validateXMLPromiseCb(resolve, reject) {
 
@@ -140,4 +141,6 @@ function validateXML(options) {
 	});
 }
 
-module.exports.validateXML = validateXML;
+export default {
+  validateXML
+}
