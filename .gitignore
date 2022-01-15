@@ -5,3 +5,5 @@ bundle.js
 # Build output
 xmllint.js
 xmllint.wasm
+
+/browser/html-data/xmllint

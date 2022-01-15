@@ -1,7 +1,5 @@
 
-const assert = require('assert').strict;
-const { Worker } = require('worker_threads');
-const workerModule = require.resolve('./xmllint_worker.js');
+const workerModule = 'xmllint/xmllint_worker.js';
 
 function normalizeInput(fileInput, extension) {
 	if (!Array.isArray(fileInput)) fileInput = [fileInput];
@@ -20,11 +18,9 @@ function normalizeInput(fileInput, extension) {
 function preprocessOptions(options) {
 	const xmls = normalizeInput(options.xml, 'xml');
 	const extension = options.extension || 'schema';
-	assert(['schema', 'relaxng'].includes(extension));
 	const schemas = normalizeInput(options.schema, 'xsd');
 	const preloads = normalizeInput(options.preload || [], 'xml');
 	const normalization = options.normalization || '';
-	assert(['', 'format', 'c14n'].includes(normalization));
 
 	const inputFiles = xmls.concat(schemas, preloads);
 	const args = [];
@@ -39,20 +35,20 @@ function preprocessOptions(options) {
 		args.push(xml['fileName']);
 	});
 
-	return { inputFiles, args };
+	return {inputFiles, args};
 }
 
 function validationSucceeded(exitCode) {
 	if (exitCode === 0) {
 		return true;
-	} else if (exitCode === 3 || exitCode === 4 /* validationError */) {
+	} else if (exitCode === 3 || exitCode === 4 /* validationError */ ) {
 		return false;
 	} else /* unknown situation */ {
 		return null;
 	}
 }
 
-function parseErrors(/** @type {string} */output) {
+function parseErrors(/** @type {string} */ output) {
 	const errorLines = output
 		.split('\n')
 		.slice(0, -2);
@@ -85,59 +81,58 @@ function parseErrors(/** @type {string} */output) {
 	});
 }
 
-function validateXML(options) {
+export function validateXML(options) {
 
-	preprocessedOptions = preprocessOptions(options);
+	const preprocessedOptions = preprocessOptions(options);
 
 	return new Promise(function validateXMLPromiseCb(resolve, reject) {
 
-		const worker = new Worker(workerModule, {
-			workerData: preprocessedOptions
-		});
-
 		let stdout = '';
 		let stderr = '';
+		let exitCode = -1;
 
-		function onMessage({isStdout, txt}) {
-			var s = String.fromCharCode(txt)
-			if (isStdout) {
-				stdout += s;
+		function onmessage(event) {
+			const data = event.data;
+			if (data.stdout) {
+				stdout += String.fromCharCode(data.stdout);
+			} else if (data.stderr) {
+				stderr += String.fromCharCode(data.stderr);
 			} else {
-				stderr += s;
+				exitCode = data.exitCode;
+				const valid = validationSucceeded(exitCode);
+				if (valid === null) {
+					const err = new Error(stderr);
+					err.code = exitCode;
+					reject(err);
+				} else {
+					resolve({
+						valid: valid,
+						normalized: stdout,
+						errors: valid ? [] : parseErrors(stderr),
+						rawOutput: stderr
+						/* Traditionally, stdout has been suppressed both
+						 * by libxml2 compile options as well as explict
+						 * --noout in arguments; hence »rawOutput« refers
+						 * only to stderr, which is a reasonable attribute value
+						 * despite the slightly odd attribute name.
+						 */
+					});
+				}
 			}
 		}
 
-		function onExit(exitCode) {
-			const valid = validationSucceeded(exitCode);
-			if (valid === null) {
-				const err = new Error(stderr);
-				err.code = exitCode;
-				reject(err);
-			} else {
-				resolve({
-					valid: valid,
-					normalized: stdout,
-					errors: valid ? [] : parseErrors(stderr),
-					rawOutput: stderr
-					/* Traditionally, stdout has been suppressed both
-					 * by libxml2 compile options as well as explict
-					 * --noout in arguments; hence »rawOutput« refers
-					 * only to stderr, which is a reasonable attribute value
-					 * despite the slightly odd attribute name.
-					 */
-				});
-			}
-		}
-
-		function onError(err) {
+		function onerror(err) {
 			console.error('Unexpected error event from worker: ' + err);
 			reject(err);
 		}
 
-		worker.on('message', onMessage);
-		worker.on('exit', onExit);
-		worker.on('error', onError);
+		const worker = new Worker(workerModule);
+		worker.onmessage = onmessage;
+		worker.onerror = onerror;
+		worker.postMessage(preprocessedOptions);
 	});
 }
 
-module.exports.validateXML = validateXML;
+export default {
+	validateXML
+}
