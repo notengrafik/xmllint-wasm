@@ -13,7 +13,6 @@ export type XMLLintOptions = {
    * Note that xmllint only supports UTF-8 encoded files.
   */
   readonly xml: XMLInput | ReadonlyArray<XMLInput>;
-  readonly schema: XMLInput | ReadonlyArray<XMLInput>;
   /**
    * Other files that should be added to Emscripten's in-memory
    * file system so that xmllint can access them.
@@ -24,7 +23,10 @@ export type XMLLintOptions = {
    * @default 'schema'
   */
   readonly extension?: 'schema' | 'relaxng',
-};
+} & (
+  | { readonly schema: XMLInput | ReadonlyArray<XMLInput> }
+  | { readonly normalization: 'c14n' | 'format' }
+);
 
 export type XMLValidationError = {
   readonly rawMessage: string;
@@ -46,6 +48,7 @@ export type XMLValidationResult = {
   readonly valid: boolean;
   readonly errors: ReadonlyArray<XMLValidationError>;
   readonly rawOutput: string;
+  readonly normalized: string;
 }
 
 export function validateXML(options: XMLLintOptions): Promise<XMLValidationResult>;

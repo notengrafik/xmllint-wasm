@@ -18,7 +18,7 @@ function normalizeInput(fileInput, extension) {
 function preprocessOptions(options) {
 	const xmls = normalizeInput(options.xml, 'xml');
 	const extension = options.extension || 'schema';
-	const schemas = normalizeInput(options.schema, 'xsd');
+	const schemas = normalizeInput(options.schema || [], 'xsd');
 	const preloads = normalizeInput(options.preload || [], 'xml');
 	const normalization = options.normalization || '';
 
@@ -30,7 +30,7 @@ function preprocessOptions(options) {
 	});
 	if (normalization) {
 		args.push(`--${normalization}`);
-	};
+	}
 	xmls.forEach(function(xml) {
 		args.push(xml['fileName']);
 	});
@@ -135,4 +135,4 @@ export function validateXML(options) {
 
 export default {
 	validateXML
-}
+};
