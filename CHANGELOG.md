@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.1
+
+Fix to the TypeScript type definitions ([# 16](https://github.com/noppa/xmllint-wasm/issues/16)).  
+No runtime changes.
+
 ## 4.0.0
 
 Add two new options, `initialMemoryPages` and `maxMemoryPages`, to control
