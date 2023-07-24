@@ -135,10 +135,20 @@ async function testWithLargeFile() {
 	if (!partToRepliacate) {
 		throw new Error('Could not find item in test file.');
 	}
-	// Make a large XML file by repeating the item 100 000 times.
-	// This will take about 90MB.
-	const xml = xmlValid.replace(partToRepliacate, partToRepliacate.repeat(100000));
-	let error = 'No error';
+	// We are doing tests here that are sensitive to the exact amount of memory
+	// this test takes. Invoke the GC to try and make the test more predictable/stable.
+	if (typeof gc === 'function') {
+		/* globals gc */
+		gc();
+	}
+	// Make a large XML file by repeating the item 200 000 times.
+	// This will take about 200MB.
+	const xml = xmlValid.replace(partToRepliacate, partToRepliacate.repeat(200000));
+	let error = 'No error. XML length: '
+	// Force V8 to eagerly evaluate length of the created string to fight
+	// any weird optimiziations that it migt be tempted to do.
+		+ xml.length;
+
 	try {
 		await xmllint.validateXML({
 			xml,
