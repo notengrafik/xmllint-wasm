@@ -147,9 +147,9 @@ async function testWithLargeFile() {
 		/* globals gc */
 		gc();
 	}
-	// Make a large XML file by repeating the item 200 000 times.
-	// This will take about 200MB.
-	const xml = xmlValid.replace(partToRepliacate, partToRepliacate.repeat(200000));
+	// Make a large XML file by repeating the item 400 000 times.
+	// This will take about 400MB.
+	const xml = xmlValid.replace(partToRepliacate, partToRepliacate.repeat(400000));
 	let error = 'No error. XML length: '
 	// Force V8 to eagerly evaluate length of the created string to fight
 	// any weird optimiziations that it migt be tempted to do.
