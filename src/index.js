@@ -175,7 +175,11 @@ function validateXML(options) {
 		addEventListener('message', onmessage);
 		addEventListener('error', onerror);
 		worker.postMessage(preprocessedOptions);
-	}).finally(() => worker.terminate());
+	}).finally(() => {
+		if (worker) {
+			return worker.terminate();
+		}
+	});
 }
 
 // #ifdef browser
