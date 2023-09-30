@@ -129,6 +129,12 @@ async function testWithTwoFiles() {
 }
 
 async function testWithLargeFile() {
+	const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
+	if(nodeMajorVersion < 14) {
+		console.log('Skipping large file test because Node version is < 14');
+		return;
+	}
+
 	// Takes the first item XML from the test file. I know I know, never parse
 	// XML with regex, but this is good enough for our test case.
 	const [partToRepliacate] = xmlValid.match(/<item\b(?:.|[\r\n])*<\/item>/) || [];
