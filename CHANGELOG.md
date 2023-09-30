@@ -1,8 +1,14 @@
 # Changelog
 
+## 4.0.2
+
+Minor improvement to error handling
+([#19](https://github.com/noppa/xmllint-wasm/issues/19),
+[012dde34b](https://github.com/noppa/xmllint-wasm/commit/012dde34b7f7ca5394703e3a6859d677dde00474)).  
+
 ## 4.0.1
 
-Fix to the TypeScript type definitions ([# 16](https://github.com/noppa/xmllint-wasm/issues/16)).  
+Fix to the TypeScript type definitions ([#16](https://github.com/noppa/xmllint-wasm/issues/16)).  
 No runtime changes.
 
 ## 4.0.0
@@ -10,7 +16,7 @@ No runtime changes.
 Add two new options, `initialMemoryPages` and `maxMemoryPages`, to control
 how much memory the WebAssembly module allocates by default and is allowed
 to allocate for the validation. 
-[PR #16](https://github.com/noppa/xmllint-wasm/pull/13),
+[PR #13](https://github.com/noppa/xmllint-wasm/pull/13),
 fixes [issue #8](https://github.com/noppa/xmllint-wasm/issues/8).  
 Thanks [@MLSTRM](https://github.com/MLSTRM)!
 
