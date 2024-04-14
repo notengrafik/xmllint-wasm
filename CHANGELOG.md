@@ -1,5 +1,27 @@
 # Changelog
 
+## 5.0.0
+
+Officially supported Node.js version is raised from 12 to 14, which is a **breaking change**.
+
+Optimizes the XML file input reading, by switching from Emscripten `FS.createDataFile` to
+`FS.writeFile`.  
+I'm not 100% certain if this is actually a breaking change or not,
+but this could possibly be a **breaking change** if you previously passed in
+file contents that were strings, but not from an utf-8 encoded file.  Try
+passing the non-utf8 encoded data as a Buffer instead, which we now also explicitly support
+in `options.xml[i].contents`.  
+
+Optimizes the output reading, by switching from Emscripten `Module.stdout` API (which apparently
+pushed one byte of output at a time to an array), to the `print` API, which pushes more reasonably 
+sized chunks of strings to the output string.  
+This fixes a crash [#20 "Invalid array length on "large xml" file"](https://github.com/noppa/xmllint-wasm/issues/20),
+that occurred on very large outputs.  
+In some cases, the old output handling resulted in output not having a last line break at the end of
+output. In the new output, the last line break is always included. This could **break** some tests 
+where you expect some exact output that didn't previously have said line break in the end.  
+Otherwise, there shouldn't be any breaking changes to the output format.
+
 ## 4.0.2
 
 Minor improvement to error handling
