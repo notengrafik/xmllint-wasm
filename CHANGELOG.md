@@ -4,6 +4,8 @@
 
 Officially supported Node.js version is raised from 12 to 16, which is a **breaking change**.
 
+Upgrades libxml2 to v2.13.8, which slightly changes some of the error messages.
+
 Optimizes the XML file input reading, by switching from Emscripten `FS.createDataFile` to
 `FS.writeFile`.  
 I'm not 100% certain if this is actually a breaking change or not,
