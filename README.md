@@ -19,7 +19,7 @@ instead.
 
 ## Overview of changes made to the original project
 
-* libxml2 version is upgraded to v2.10.3
+* libxml2 version is upgraded to v2.13.8
 * The output is wasm instead of asm.js
 * In addition to modern browsers with wasm support, works in Node.js 12 or later
 * Library size is quite a bit smaller, the wasm file and wrapper js files
@@ -35,8 +35,8 @@ npm i xmllint-wasm
 ```
 The library uses Node.js [Worker threads](https://nodejs.org/api/worker_threads.html)
 to isolate the Emscripten wrapper from your main process (so that
-when it calls process.exit your whole server won't go down), which is
-why Node >= 12 is required.
+when it calls process.exit your whole server won't go down).  
+We require Node.js version 16 or later.
 
 ## API
 
