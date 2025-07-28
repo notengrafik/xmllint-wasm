@@ -6,8 +6,9 @@ export interface XMLFileInfo {
 }
 
 export type XMLInput = XMLString | XMLFileInfo;
+export type SchemaInput = XMLInput | ReadonlyArray<XMLInput>;
 
-interface Schema { readonly schema: XMLInput | ReadonlyArray<XMLInput> }
+type Schema = { readonly schema: SchemaInput } | { readonly relaxng: SchemaInput }
 interface Normalization {
   /**
    * Pass either --format or --c14n to xmllint to get a formatted
